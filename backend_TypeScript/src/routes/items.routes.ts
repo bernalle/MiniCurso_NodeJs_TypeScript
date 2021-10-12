@@ -1,16 +1,16 @@
 import { Router } from "express";
-import connection from "../database/connection";
+import knex from "../database/connection";
 
-const itemsRoutes = Router();
+const itemsRouter = Router();
 
-itemsRoutes.get('/', async (request, response) => {
-    const items = await connection('items').select('*');
+itemsRouter.get('/', async (request, response) => {
+    const items = await knex('items').select('*');
 
-    const serializedItems = items.map(items => {
+    const serializedItems = items.map(item => {
         return{
-            id: items.id,
-            title: items.title,
-            image_url:`http://localhost:8082/uploads/${items.image}`
+            id: item.id,
+            title: item.title,
+            image_url:`http://localhost:8082/uploads/${item.image}`
         }
     });
 
@@ -18,4 +18,4 @@ itemsRoutes.get('/', async (request, response) => {
 });
 
 
-export default itemsRoutes;
+export default itemsRouter;

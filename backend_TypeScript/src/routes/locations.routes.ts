@@ -1,9 +1,9 @@
 import { Router } from "express";
-import connection from "../database/connection";
+import knex from "../database/connection";
 
-const locationsRoutes = Router();
+const locationsRouter = Router();
 
-locationsRoutes.post('/', async (request, response) => {
+locationsRouter.post('/', async (request, response) => {
     const {
         name,
         email,
@@ -24,27 +24,36 @@ locationsRoutes.post('/', async (request, response) => {
         longitude,
         city,
         uf,
-        items
     };
 
-    const newIds = await connection('locations').insert(location);
+    const transaction = await knex.transaction();
 
-    const locationId = newIds[0];
+    const newIds = await transaction('locations').insert(location);
+
+    const location_id = newIds[0];
 
     const locationItems = items.map((item_id: number) => {
+        const selectedItem = transaction('items').where('id', item_id).first();
+
+        if(!selectedItem){
+            return response.status(400).json({ message: "Item not found."});
+        }
+
         return {
             item_id,
-            location_id: locationId
+            location_id
         }
     });
 
-    await connection('location_items').insert(locationItems);
+    await transaction('location_items').insert(locationItems);
+
+    await transaction.commit();
 
     return response.json({
-        id:locationId,
+        id: location_id,
         ...location
     });
 });
 
 
-export default locationsRoutes;
+export default locationsRouter;

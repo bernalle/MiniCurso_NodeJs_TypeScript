@@ -1,10 +1,10 @@
 import { Router } from "express";
-import itemsRoutes from "./items.routes";
-import locationsRoutes from "./locations.routes";
+import itemsRouter from "./items.routes";
+import locationsRouter from "./locations.routes";
 
 const routes = Router();
 
-routes.use('/items', itemsRoutes);
-routes.use('/locations', locationsRoutes);
+routes.use('/items', itemsRouter);
+routes.use('/locations', locationsRouter);
 
 export default routes;
