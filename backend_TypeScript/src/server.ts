@@ -1,5 +1,5 @@
 import express, { request, response } from 'express';
-import cors from 'cors';
+import cors from 'cors'
 import path from 'path'
 import routes from './routes';
 
